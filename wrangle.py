@@ -1,4 +1,7 @@
 import pandas as pd
+
+import sklearn.preprocessing
+
 from env import get_db_url
 import os
 import warnings
@@ -85,11 +88,12 @@ def scale_data(train, validate, test, return_scaler=False):
     If return_scaler is true, the scaler will be returned as well.
     '''
     
-    col = x_train_scaled.columns[x_train_scaled.dtypes == 'float']
+    col = train.columns[train.dtypes == 'float']
+    col = col.append(train.columns[train.dtypes == 'int'])
 
-    train_scaled = train
-    validate_scaled = validate
-    test_scaled = test
+    train_scaled = train[col]
+    validate_scaled = validate[col]
+    test_scaled = test[col]
 
     scaler = sklearn.preprocessing.MinMaxScaler()
     scaler.fit(train[col])
